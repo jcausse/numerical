@@ -72,6 +72,12 @@ class NewtonInterpolator:
         
         return result
 
+    def get_coefficients(self) -> list[float]:
+        if self._modified:
+            self._modified = False
+            self._coefficients = newton_interpolation(self._points)
+        return self._coefficients.copy()
+
     def get_string(self) -> str:
         return self.__str__()
 
@@ -99,11 +105,13 @@ class NewtonInterpolator:
 ####################################################################################################
 
 if __name__ == "__main__":
-    # Ejercicio 2 de la guia 4
-    interp = NewtonInterpolator()
-    interp.add_point(Point(-1, -1))
-    interp.add_point(Point(0, 3))
-    interp.add_point(Point(2, 11))
-    interp.add_point(Point(3, 27))
-    print(interp.get_string())
-    print(f'P(1) = {interp.interpolate(1)}')
+    #################
+    # Usage example #
+    #################
+
+    points = [Point(-1, -1), Point(0, 3), Point(2, 11), Point(3, 27)]
+    interp = NewtonInterpolator(points)
+    
+    print(interp.get_coefficients())                # [-1.0, 4.0, 0.0, 1.0]
+    print(f'P(x) = ' + interp.get_string())         # P(x) = -1 + 4 (x + 1) + 1 (x + 1)(x - 0)(x - 2)
+    print(f'P(1) = {interp.interpolate(1)}')        # P(1) = 5
