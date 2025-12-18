@@ -46,6 +46,12 @@ class LagrangeInterpolator:
             result += val
         
         return result
+    
+    def get_coefficients(self) -> list[float]:
+        if self._modified:
+            self._modified = False
+            self._coefficients = self._calculate_coefficients()
+        return self._coefficients.copy()
 
     def _calculate_coefficients(self) -> list[float]:
         result = []
@@ -115,6 +121,20 @@ if __name__ == "__main__":
     points = [Point(-1, -1), Point(0, 3), Point(2, 11), Point(3, 27)]
     interp = LagrangeInterpolator(points)
     
+    # P(x) = -1.0000 * (A0 / B0) + 3.0000 * (A1 / B1) + 11.0000 * (A2 / B2) + 27.0000 * (A3 / B3)
+    # A0 = (x - 0)(x - 2)(x - 3)
+    # B0 = (-1 - 0)(-1 - 2)(-1 - 3)
+    # A1 = (x + 1)(x - 2)(x - 3)
+    # B1 = (0 + 1)(0 - 2)(0 - 3)
+    # A2 = (x + 1)(x - 0)(x - 3)
+    # B2 = (2 + 1)(2 - 0)(2 - 3)
+    # A3 = (x + 1)(x - 0)(x - 2)
+    # B3 = (3 + 1)(3 - 0)(3 - 2)
     print(f'P(x) = ' + interp.get_string())
+
+    print(interp.get_coefficients())                    # [0.08333333333333333, 0.5, -1.8333333333333333, 2.25]
+
+    # P(x) = 0.0833 * (x - 0)(x - 2)(x - 3) + 0.5000 * (x + 1)(x - 2)(x - 3) - 1.8333 * (x + 1)(x - 0)(x - 3) + 2.2500 * (x + 1)(x - 0)(x - 2)
     print(f'P(x) = ' + interp.get_short_string())
+
     print(f'P(1) = {interp.interpolate(1)}')            # P(1) = 5.0
