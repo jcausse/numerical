@@ -53,7 +53,7 @@ class NewtonInterpolator:
         self._modified = True
 
     def clear(self) -> None:
-        self._points = []
+        self._points.clear()
         self._modified = True
 
     def interpolate(self, x: float) -> float:
